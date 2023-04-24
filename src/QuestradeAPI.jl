@@ -5,7 +5,8 @@ using ConfParser
 
 include("token.jl")
 include("utils.jl")
+include("accounts.jl")
 
-export QuestradeToken, refresh_token
+export refresh_token, validate, get_accounts
 
 end # module QuestradeAPI

@@ -26,16 +26,4 @@ using QuestradeAPI
         QuestradeAPI.delete_current_token()
         true
     end
-
-    
-end
-
-@testset "Integration" begin
-    @test begin
-        token = QuestradeAPI.load_current_token()
-        r = QuestradeAPI._get_req(token, "accounts")
-        accounts = QuestradeAPI._parse_response(Dict, r)
-        print(accounts["accounts"][2])
-        true
-    end
 end

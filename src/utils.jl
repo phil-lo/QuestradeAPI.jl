@@ -1,4 +1,4 @@
-function _parse_response(::Type{Dict}, response::HTTP.Messages.Response)
+function _parse_json_response(response::HTTP.Messages.Response)
     body = copy(response.body)
     return JSON.Parser.parse(String(body))
 end
@@ -41,7 +41,12 @@ _headers(token::QuestradeToken) = Dict("Authorization" => "$(token.token_type) $
 
 
 function _get_req(token::QuestradeToken, url::String)::HTTP.Messages.Response
-    r = HTTP.request("GET", "$(_base_url(token))$url?", headers=_headers(token))
-    return r
+    try
+        return HTTP.request("GET", "$(_base_url(token))$url?", headers=_headers(token))
+    catch e
+        if e isa HTTP.Exceptions.StatusError
+            error(e)
+        end
+    end
 end
 

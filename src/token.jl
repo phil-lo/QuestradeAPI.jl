@@ -75,3 +75,12 @@ function refresh_token(refresh_token::AbstractString)
     save(token)
     return token
 end
+
+function validate(token::QuestradeToken)::Bool
+    try
+        r = QuestradeAPI._get_req(token, "/time")
+        return true
+    catch err
+        return false
+    end
+end
