@@ -24,7 +24,7 @@ end
 
 
 function get_accounts()::Vector{Account}
-    r = QuestradeAPI._get_req(TOKEN, "/accounts")
+    r = QuestradeAPI._get_req(load_token(), "/accounts")
     accounts = QuestradeAPI._parse_json_response(r)["accounts"]
     return [Account(account) for account in accounts]
 end
