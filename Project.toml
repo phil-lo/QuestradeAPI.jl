@@ -5,6 +5,11 @@ version = "0.1.0"
 
 [deps]
 ConfParser = "88353bc9-fd38-507d-a820-d3b43837d6b9"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 JLD = "4138dd39-2aa7-5051-a626-17a0bb65d9c8"
 JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
+Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
+StructMapping = "7c3b921d-20d6-4eba-ad57-605525e86ab2"
+StructTypes = "856f2bd8-1eba-4b0a-8007-ebc267875bd4"

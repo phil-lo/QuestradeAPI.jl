@@ -4,13 +4,6 @@ function _parse_json_response(response::HTTP.Messages.Response)
 end
 
 
-function _check_status_code(resp::HTTP.Messages.Response)
-    if resp.status != 200
-        error("Expected status code 200 but received $(resp.status)")
-    end
-end
-
-
 function _parse_config()
     conf = ConfParse("$(@__DIR__)/config.ini")
     parse_conf!(conf)
@@ -36,17 +29,21 @@ function _delete_jld(name::AbstractString)
     return nothing
 end
 
-_base_url(token::QuestradeToken) = "$(token.api_server)v1"
+_version() = retrieve(_parse_config(), "Settings", "Version")
+_base_url(token::QuestradeToken) = "$(token.api_server)$(_version())"
 _headers(token::QuestradeToken) = Dict("Authorization" => "$(token.token_type) $(token.access_token)")
 
 
 function _get_req(token::QuestradeToken, url::String)::HTTP.Messages.Response
+    if isexpired(token)
+        @info "Refreshing QuestradeToken"
+        token = refresh_token!(token)
+    end
+
     try
         return HTTP.request("GET", "$(_base_url(token))$url?", headers=_headers(token))
     catch e
-        if e isa HTTP.Exceptions.StatusError
-            error(e)
-        end
+        error(e)
     end
 end
 

@@ -1,29 +1,34 @@
 using Test
 using QuestradeAPI
+using Dates
 
 @testset "Token" begin
     @test begin # New QuestradeToken
-        token = QuestradeToken("refresh")
+        token = QuestradeAPI.QuestradeToken("refresh", "refresh_token", "refresh", 0, "New", Dates.format(now(), "yyyy-mm-dd HH:MM:SS"))
         @assert token.expires_in == 0 "Empty token expires_in = 0"
-        @assert token.refresh_token == "refresh" "New token refresh_token is not what was given"
-        @assert QuestradeAPI.isnew(token) "Token is not new"
+        @assert token.refresh_token == "refresh_token" "New token refresh_token $(token.refresh_token) is not what was given"
         true
     end
 
     @test begin # Save and load QuestradeToken
-        token = QuestradeToken("TestToken1")
-        QuestradeAPI.save(token)
-        token == QuestradeAPI.load_current_token()
+        token = QuestradeAPI.QuestradeToken("refresh", "refresh_token", "refresh", 0, "New1", Dates.format(now(), "yyyy-mm-dd HH:MM:SS"))
+        @time QuestradeAPI.save(token, name="TestToken")
+        @time token == QuestradeAPI.load_token(name="TestToken")
     end
 
-    @test begin # Try loading QuestradeToken
-        QuestradeAPI.delete_current_token()
-        token = QuestradeAPI.load_current_token()
+    @test begin # Token should be expired
+        token = QuestradeAPI.load_token(name="TestToken")
+        QuestradeAPI.isexpired(token)
+    end
+
+    @test begin # Try loading QuestradeToken should send message and return nothing
+        QuestradeAPI._delete_token(name="TestToken")
+        token = QuestradeAPI.load_token(name="TestToken")
         token === nothing
     end
 
-    @test begin # Try deleting QuestradeToken
-        QuestradeAPI.delete_current_token()
+    @test begin # Try deleting QuestradeToken should send message and no error
+        QuestradeAPI._delete_token(name="TestToken")
         true
     end
 end

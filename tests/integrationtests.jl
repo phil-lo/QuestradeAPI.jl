@@ -1,16 +1,18 @@
 using Test
 using QuestradeAPI
 
-token = QuestradeAPI.load_current_token()
-
+token = QuestradeAPI.load_token()
+QuestradeAPI.isexpired(token)
 
 @testset "Integration" begin
     @test begin
-        validate(token)
+        @time QuestradeAPI.test(token)
     end
     @test begin
-        accounts = get_accounts()
-        print(accounts)
+        QuestradeAPI.isexpired(token) == false
+    end
+    @test begin
+        @time accounts = get_accounts()
         true
     end
 end

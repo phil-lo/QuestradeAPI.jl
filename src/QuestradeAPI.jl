@@ -1,12 +1,12 @@
 module QuestradeAPI
 
-using HTTP, JLD, JSON
-using ConfParser
+using HTTP, JLD, JSON, ConfParser 
+using Dates
 
 include("token.jl")
 include("utils.jl")
 include("accounts.jl")
 
-export refresh_token, validate, get_accounts
+export refresh_token, get_accounts
 
 end # module QuestradeAPI
