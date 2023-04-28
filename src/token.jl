@@ -1,5 +1,3 @@
-import Base: showerror, Exception
-
 struct QuestradeToken
     access_token::String
     refresh_token::String 
@@ -10,8 +8,8 @@ struct QuestradeToken
 end
 
 
-struct InvalidQuestradeToken <: Exception end
-showerror(io::IO, e::InvalidQuestradeToken) = print(io, "No QuestradeToken to load, use refresh_token() with valid refresh token")
+struct MissingQuestradeToken <: Exception end
+showerror(io::IO, e::MissingQuestradeToken) = print(io, "No QuestradeToken to load, use refresh_token() with valid refresh token")
 
 """
 Save QuestradeToken to JLD file
@@ -29,7 +27,7 @@ function load_token(;name::String="QuestradeToken")::Union{QuestradeToken, Nothi
     try 
         return _load_jld(name)
     catch err
-        throw(InvalidQuestradeToken())
+        throw(MissingQuestradeToken())
     end
 end
 
@@ -95,7 +93,7 @@ end
 
 function test(token::QuestradeToken)::Bool
     try
-        r = _get_req(token, "/time")
+        r = _get_req(token, "/time", Dict())
         return true
     catch err
         return false
