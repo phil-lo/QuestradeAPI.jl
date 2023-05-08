@@ -12,6 +12,6 @@ JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 
 [compat]
 ConfParser = "=0.1.2"
-HTTP = ">=0.13.3"
+HTTP = "^1.8.0"
 JLD = "=0.13.3"
-JSON = ">=0.21.4"
+JSON = "^0.21.4"
