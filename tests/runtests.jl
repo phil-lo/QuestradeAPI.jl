@@ -21,10 +21,15 @@ using Dates
         QuestradeAPI.isexpired(token)
     end
 
-    @test begin # Try loading QuestradeToken should send message and return nothing
+    @test begin # Try loading QuestradeToken should throw error
         QuestradeAPI._delete_token(name="TestToken")
-        token = QuestradeAPI.load_token(name="TestToken")
-        token === nothing
+        try
+            token = QuestradeAPI.load_token(name="TestToken")
+        catch err
+            if err isa QuestradeAPI.MissingQuestradeToken
+                true
+            end
+        end
     end
 
     @test begin # Try deleting QuestradeToken should send message and no error

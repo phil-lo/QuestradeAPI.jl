@@ -54,3 +54,4 @@ function _get_req(token::QuestradeToken, url::String, params::Dict)::HTTP.Messag
     end
 end
 
+_parse_date(date::AbstractString)::Date = Date(date[1:10])

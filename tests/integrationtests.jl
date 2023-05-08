@@ -20,16 +20,27 @@ using Dates
     end
 
     @test begin
-        accounts = get_accounts(QuestradeAPI.Account)
-        account = [acc for acc in accounts if acc.account_type == "TFSA"][1]
-        transactions = get_activities(account, Date(2023, 3, 20), Date(2023, 4, 27))
+        accounts = get_accounts()
+        account = [acc for acc in accounts if acc["type"] == "TFSA"][1]
+        transactions = get_activities(account["number"], Date(2023, 3, 20), Date(2023, 4, 27))
         length(transactions) > 1
     end
 
     @test begin
-        accounts = get_accounts(QuestradeAPI.Account)
-        account = [acc for acc in accounts if acc.account_type == "TFSA"][1]
-        balances = get_balances(account)
+        accounts = get_accounts()
+        account = [acc for acc in accounts if acc["type"] == "TFSA"][1]
+        balances = get_balances(account["number"])
         true
+    end
+
+    @test begin
+        names = "AAPL"
+        symbols = get_symbols(names)
+        symbols["symbolId"] == 8049
+    end
+
+    @test begin
+        names = 8049
+        symbols = get_option_chain(names)
     end
 end
