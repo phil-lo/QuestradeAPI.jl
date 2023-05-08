@@ -27,7 +27,7 @@ QuestradeAPI.load_token()
 #### Account Activities
 ```julia
 using Dates
-account = get_acounts()[1]
+account = get_accounts()[1]
 activities = get_activities(account["number"], Date(2023, 3, 20), Date(2023, 4, 27))
 ```
 #### Account Balances
