@@ -1,6 +1,9 @@
 function get_accounts()::Vector{Dict}
     r = QuestradeAPI._get_req(load_token(), "/accounts", Dict())
     accounts = QuestradeAPI._parse_json_response(r)["accounts"]
+    if length(accounts) < 1
+        return Dict[]
+    end
     
     for account in accounts
         account["number"] = parse(Int, account["number"])

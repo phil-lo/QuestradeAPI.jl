@@ -15,7 +15,7 @@ using Dates
     end
 
     @test begin
-        @time accounts = get_accounts()
+        accounts = get_accounts()
         true
     end
 
@@ -40,7 +40,24 @@ using Dates
     end
 
     @test begin
-        names = 8049
-        symbols = get_option_chain(names)
+        names = ["AAPL", "VOO"]
+        symbols = get_symbols(names)
+        length(symbols) == 2
+    end
+    @test begin
+        id = 8049
+        symbols = get_symbols(id)
+        symbols["symbolId"] == 8049
+    end
+    @test begin
+        ids = [8049]
+        symbols = get_symbols(ids)
+        length(symbols) == 1
+    end
+
+    @test begin
+        id = 8049
+        symbols = get_option_chain(id)
+        length(symbols) > 1
     end
 end
