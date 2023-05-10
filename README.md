@@ -4,7 +4,7 @@ Julia wrapper library for the [Questrade API](https://www.questrade.com/api/docu
 
 I have implemented the bare minimum for my usage of the API, but contributions are welcomed. Adding routes is fairly simple.
 
-## Installaion
+## Installation
 The package is registered in the general Julia package registry.
 ```julia
 ]add QuestradeAPI
