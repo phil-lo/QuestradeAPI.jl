@@ -15,21 +15,21 @@ function _parse_config()
 end
 
 
-function _to_jld(t, name::AbstractString)
-    jldopen("$(@__DIR__)/$name.jld", "w") do file
+function _to_jld(t, name::AbstractString, directory::AbstractString)
+    jldopen("$(directory)/$(name).jld", "w") do file
         write(file, name, t)
     end
     return nothing
 end
 
 
-function _load_jld(name::AbstractString)::Any
-    return jldopen("$(@__DIR__)/$name.jld", "r") do file read(file, name) end
+function _load_jld(name::AbstractString, directory::AbstractString)::Any
+    return jldopen("$(directory)/$(name).jld", "r") do file read(file, name) end
 end
 
 
-function _delete_jld(name::AbstractString)
-    rm("$(@__DIR__)/$name.jld")
+function _delete_jld(name::AbstractString, directory::AbstractString)
+    rm("$(directory)/$name.jld")
     return nothing
 end
 
@@ -38,19 +38,24 @@ _base_url(token::QuestradeToken) = "$(token.api_server)$(_version())"
 _headers(token::QuestradeToken) = Dict("Authorization" => "$(token.token_type) $(token.access_token)")
 
 
-function _get_req(token::QuestradeToken, url::String, params::Dict)::HTTP.Messages.Response
+function _get_req(token::QuestradeToken, url::String, params::Dict; retries::Int = 1)::HTTP.Messages.Response
     if isexpired(token)
         @info "Refreshing QuestradeToken"
         token = refresh_token!(token)
     end
     
-    params = collect(pairs(params))
-    query = join(map(p -> "$(p.first)=$(p.second)", params), "&")
+    q_params = collect(pairs(params))
+    query = join(map(p -> "$(p.first)=$(p.second)", q_params), "&")
 
     try
         return HTTP.request("GET", "$(_base_url(token))$url?$(query)", headers=_headers(token))
     catch e
-        error(e)
+        if retries < 1
+            error(e)
+        else
+            token = refresh_token!(token)
+            _get_req(token, url, params, retries=0)
+        end
     end
 end
 

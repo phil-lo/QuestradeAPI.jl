@@ -1,5 +1,5 @@
-function get_accounts()::Vector{Dict}
-    r = QuestradeAPI._get_req(load_token(), "/accounts", Dict())
+function get_accounts(token::QuestradeToken)::Vector{Dict}
+    r = QuestradeAPI._get_req(token, "/accounts", Dict())
     accounts = QuestradeAPI._parse_json_response(r)["accounts"]
     if length(accounts) < 1
         return Dict[]
@@ -12,7 +12,7 @@ function get_accounts()::Vector{Dict}
 end
 
 
-function get_activities(id::Int, start_dt::Date, end_dt::Date; dt_rng::Int = 7)::Vector{Dict}
+function get_activities(token::QuestradeToken, id::Int, start_dt::Date, end_dt::Date; dt_rng::Int = 7)::Vector{Dict}
     dr = start_dt:Day(dt_rng):end_dt
 
     # Looping because there is a limit to response length (˜25) from the API
@@ -24,14 +24,14 @@ function get_activities(id::Int, start_dt::Date, end_dt::Date; dt_rng::Int = 7):
         "startTime" => "$(DateTime(date))-0",
         "endTime" => "$(DateTime(date + Day(dt_rng-1)))-0"
         )
-        r = _get_req(load_token(), "/accounts/$(id)/activities", params)
+        r = _get_req(token, "/accounts/$(id)/activities", params)
         append!(activities, _parse_json_response(r)["activities"])
     end
 
     return activities
 end
 
-function get_balances(id::Int)::Vector{Dict}
-    r = _get_req(load_token(), "/accounts/$(id)/balances", Dict())
+function get_balances(token::QuestradeToken, id::Int)::Vector{Dict}
+    r = _get_req(token, "/accounts/$(id)/balances", Dict())
     return _parse_json_response(r)["perCurrencyBalances"]
 end
