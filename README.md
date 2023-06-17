@@ -20,23 +20,24 @@ The package is registered in the general Julia package registry.
 
 ## Basic usage
 ### Refresh Token
-A refresh_token needs to be defined (see Questrade API documentation). The token itself is not useful for the usage of the library.
+A refresh_token needs to be defined (see Questrade API documentation). The token is then used to make requests to the api with the available methods, see below.
 ```julia
 using QuestradeAPI
-refresh_token("REFRESH_TOKEN")
+token = QuestradeAPI.refresh_token("REFRESHTOKEN", "TokenName", "TokenDirectory")
+
 
 # To see the token information
-QuestradeAPI.load_token()
+token = QuestradeAPI.load_token("TokenName", "TokenDirectory")
 ```
 
 ### Examples
 #### Account Activities
 ```julia
 using Dates
-account = get_accounts()[1]
-activities = get_activities(account["number"], Date(2023, 3, 20), Date(2023, 4, 27))
+account = QuestradeAPI.get_accounts(token)[1]
+activities = QuestradeAPI.get_activities(token, account["number"], Date(2023, 3, 20), Date(2023, 4, 27))
 ```
 #### Account Balances
 ```julia
-balances = get_balances(account["number"])
+balances = QuestradeAPI.get_balances(token, account["number"])
 ```
