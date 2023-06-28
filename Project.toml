@@ -1,7 +1,7 @@
 name = "QuestradeAPI"
 uuid = "a23c94f3-7123-4b19-879a-52247cde9a4c"
 authors = ["Philippe Lacroix-Ouellette <philippe.lacroix-ouellette@hec.ca>"]
-version = "0.2.1"
+version = "0.2.2"
 
 [deps]
 ConfParser = "88353bc9-fd38-507d-a820-d3b43837d6b9"
