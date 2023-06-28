@@ -1,4 +1,4 @@
-struct QuestradeToken
+mutable struct QuestradeToken
     access_token::String
     refresh_token::String 
     api_server::String
@@ -84,7 +84,18 @@ end
 Refresh an existing token
 """
 function refresh_token!(token::QuestradeToken)
-    token = refresh_token(token.refresh_token, token.name, token.directory)
+    new_token = refresh_token(token.refresh_token, token.name, token.directory)
+    
+    # Refreshing original token, preventing re-using an expired token
+    token.access_token = new_token.access_token
+    token.refresh_token = new_token.refresh_token
+    token.api_server = new_token.api_server
+    token.expires_in = new_token.expires_in 
+    token.token_type = new_token.token_type
+    token.refreshed_on = new_token.refreshed_on
+    token.name = new_token.name
+    token.directory = new_token.directory
+
     return token
 end
 

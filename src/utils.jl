@@ -54,7 +54,7 @@ function _get_req(token::QuestradeToken, url::String, params::Dict; retries::Int
             error(e)
         else
             token = refresh_token!(token)
-            _get_req(token, url, params, retries=0)
+            return _get_req(token, url, params, retries=0)
         end
     end
 end
