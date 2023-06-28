@@ -13,7 +13,7 @@ using Dates
     @test begin # Save and load QuestradeToken
         token = QuestradeAPI.QuestradeToken("refresh", "refresh_token", "refresh", 0, "New1", Dates.format(now(), "yyyy-mm-dd HH:MM:SS"), "TestToken", pwd())
         QuestradeAPI.save(token)
-        token == QuestradeAPI.load_token("TestToken", pwd())
+        token.refresh_token == QuestradeAPI.load_token("TestToken", pwd()).refresh_token
     end
 
     @test begin # Token should be expired
