@@ -1,0 +1,5 @@
+[Settings]
+Version = "v1"
+
+[Auth]
+RefreshUrl = "https://login.questrade.com/oauth2/token?grant_type=refresh_token&refresh_token="

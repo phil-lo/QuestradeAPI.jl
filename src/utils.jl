@@ -9,31 +9,12 @@ end
 
 
 function _parse_config()
-    conf = ConfParse("$(@__DIR__)/config.ini")
-    parse_conf!(conf)
+    conf = TOML.parsefile("$(@__DIR__)/config.toml")
     return conf
 end
 
 
-function _to_jld(t, name::AbstractString, directory::AbstractString)
-    jldopen("$(directory)/$(name).jld", "w") do file
-        write(file, name, t)
-    end
-    return nothing
-end
-
-
-function _load_jld(name::AbstractString, directory::AbstractString)::Any
-    return jldopen("$(directory)/$(name).jld", "r") do file read(file, name) end
-end
-
-
-function _delete_jld(name::AbstractString, directory::AbstractString)
-    rm("$(directory)/$name.jld")
-    return nothing
-end
-
-_version() = retrieve(_parse_config(), "Settings", "Version")
+_version() = _parse_config()["Settings"]["Version"]
 _base_url(token::QuestradeToken) = "$(token.api_server)$(_version())"
 _headers(token::QuestradeToken) = Dict("Authorization" => "$(token.token_type) $(token.access_token)")
 

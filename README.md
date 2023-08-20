@@ -20,14 +20,16 @@ The package is registered in the general Julia package registry.
 
 ## Basic usage
 ### Refresh Token
-A refresh_token needs to be defined (see Questrade API documentation). The token is then used to make requests to the api with the available methods, see below.
+A refresh token needs to be generated (see Questrade API documentation). The token is then used to make requests to the api with the available methods, see below.
 ```julia
 using QuestradeAPI
-token = QuestradeAPI.refresh_token("REFRESHTOKEN", "TokenName", "TokenDirectory")
+
+# To initialize a new token
+token = QuestradeToken("Refresh Token", "Token Name", "Token Directory")
 
 
-# To see the token information
-token = QuestradeAPI.load_token("TokenName", "TokenDirectory")
+# To load an existing token
+token = QuestradeToken("TokenName", "TokenDirectory")
 ```
 
 ### Examples
