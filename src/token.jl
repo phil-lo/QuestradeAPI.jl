@@ -13,33 +13,62 @@ end
 struct MissingQuestradeToken <: Exception end
 showerror(io::IO, e::MissingQuestradeToken) = print(io, "No QuestradeToken to load, use refresh_token() with valid refresh token")
 
-"""
-Save QuestradeToken to JLD file
-"""
-function save(token::QuestradeToken)
-    _to_jld(token, token.name, token.directory)
-    return nothing
+function convert(::Type{Dict}, token::QuestradeToken)
+    return Dict(
+        :access_token => token.access_token,
+        :refresh_token => token.refresh_token,
+        :api_server => token.api_server,
+        :expires_in => token.expires_in,
+        :token_type => token.token_type,
+        :refreshed_on => token.refreshed_on,
+        :name => token.name,
+        :directory => token.directory
+    )
 end
 
+"""
+Load an existing QuestradeToken
 
+QuestradeToken(name::AbstractString, directory::AbstractString)
 """
-Load QuestradeToken from JLD file
-"""
-function load_token(name::String, directory::String)::QuestradeToken
-    try 
-        return _load_jld(name, directory)
+function QuestradeToken(name::AbstractString, directory::AbstractString)
+    try
+        d = TOML.parsefile("$(directory)/$(name).toml")
+        return QuestradeToken(
+            d["access_token"],
+            d["refresh_token"],
+            d["api_server"],
+            d["expires_in"],
+            d["token_type"],
+            d["refreshed_on"],
+            d["name"],
+            d["directory"]
+        )
     catch err
         throw(MissingQuestradeToken())
     end
 end
 
 
+
 """
-Delete QuestradeToken
+Save QuestradeToken to TOML file
 """
-function _delete_token(name::String, directory::String)
+function save(token::QuestradeToken)
+    d = convert(Dict, token)
+    open("$(token.directory)/$(token.name).toml", "w") do io
+        TOML.print(io, d)
+    end
+    return nothing
+end
+
+
+"""
+Delete a QuestradeToken
+"""
+function delete!(token::QuestradeToken)
     try
-        _delete_jld(name, directory)
+        rm("$(token.directory)/$(token.name).toml")
     catch err
         @debug "No QuestradeToken to delete"
     end
@@ -48,7 +77,9 @@ end
 
 
 """
-Convert Questrade HTTP response to QuestradeToken
+Initialize a QuestradeToken with a HTTP response
+
+QuestradeToken(response::HTTP.Messages.Response, name::String, directory::String)
 """
 function QuestradeToken(response::HTTP.Messages.Response, name::String, directory::String)
     d = _parse_json_response(response)
@@ -60,25 +91,26 @@ end
 """
 Get Questrade token refresh URL
 """
-refresh_url() = retrieve(_parse_config(), "Auth", "RefreshUrl")
+refresh_url() = _parse_config()["Auth"]["RefreshUrl"]
 function refresh_url(refresh_token::String)
     return "$(refresh_url())$(refresh_token)"
 end
 
+
 """
-Used to initialize first token
+Used to initialize a new QuestradeToken
+
+QuestradeToken(refresh_token::String, name::String, directory::String)
 """
-function refresh_token(refresh_token::String, name::String, directory::String)
+function QuestradeToken(refresh_token::String, name::String, directory::String)
     @info "Refreshing QuestradeToken($name)"
     url = refresh_url(refresh_token)
     response = HTTP.get(url)
     token = QuestradeToken(response, name, directory)
 
-    _delete_token(name, directory)
     save(token)
     return token
 end
-
 
 """
 Refresh an existing token
@@ -111,7 +143,7 @@ end
 
 
 """
-true if token needs is expired and needs to be refreshed
+true if QuestradeToken needs is expired and needs to be refreshed
 """
 function isexpired(token::QuestradeToken)::Bool
     if refreshed_on(token) + Second(token.expires_in - 60) >= now()

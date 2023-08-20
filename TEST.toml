@@ -1,0 +1,8 @@
+expires_in = 1800
+token_type = "Bearer"
+access_token = "i7A8mJGnmQO-Wug6CWJj9JhVSOTv40pa0"
+refresh_token = "O6xnjZXb84Wtub-zBCgQ_Dd8QtdwtevY0"
+api_server = "https://api03.iq.questrade.com/"
+name = "TEST"
+refreshed_on = "2023-08-20 17:00:24"
+directory = "/Users/Philippe/quant-scape/dev/QuestradeAPI.jl"
