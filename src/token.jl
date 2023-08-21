@@ -11,7 +11,7 @@ end
 
 
 struct MissingQuestradeToken <: Exception end
-showerror(io::IO, e::MissingQuestradeToken) = print(io, "No QuestradeToken to load, use refresh_token() with valid refresh token")
+showerror(io::IO, e::MissingQuestradeToken) = print(io, "No QuestradeToken to load, use QuestradeToken(refresh_token::String, name::String, directory::String) with valid refresh token")
 
 function convert(::Type{Dict}, token::QuestradeToken)
     return Dict(
@@ -116,7 +116,7 @@ end
 Refresh an existing token
 """
 function refresh_token!(token::QuestradeToken)
-    new_token = refresh_token(token.refresh_token, token.name, token.directory)
+    new_token = QuestradeToken(token.refresh_token, token.name, token.directory)
     
     # Refreshing original token, preventing re-using an expired token
     token.access_token = new_token.access_token
