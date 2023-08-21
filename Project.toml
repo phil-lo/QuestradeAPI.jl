@@ -1,7 +1,7 @@
 name = "QuestradeAPI"
 uuid = "a23c94f3-7123-4b19-879a-52247cde9a4c"
 authors = ["Philippe Lacroix-Ouellette <philippe.lacroix-ouellette@hec.ca>"]
-version = "0.2.4"
+version = "0.2.5"
 
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
